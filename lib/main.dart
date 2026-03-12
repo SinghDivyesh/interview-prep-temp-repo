@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:interview_practice/HomeScreen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -12,61 +12,87 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: CounterScreen(),
-    );
+        home: LoginScreen());
   }
 }
 
-class CounterScreen extends StatefulWidget {
-  const CounterScreen({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
 
   @override
-  State<CounterScreen> createState() => _CounterScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _CounterScreenState extends State<CounterScreen> {
-  int count = 0;
+class _LoginScreenState extends State<LoginScreen> {
+  // controllers
+  TextEditingController emailcontroller = TextEditingController();
+  TextEditingController passwordcontroller = TextEditingController();
+   bool obscuretext = true;
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(
-          child: Text("Counter Screen", style: TextStyle(color: Colors.black)),
-        ),
-        backgroundColor: Colors.grey,
+        title: Center(child: Text("Login Screen")),
+        backgroundColor: Colors.blue,
       ),
-      body: Center(
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("You pressed the counter button",style: TextStyle(fontSize: 28),),
-            SizedBox(height: 10,),
-            Text("$count",style: TextStyle(fontSize: 60,fontWeight: FontWeight.bold),),
-            SizedBox(height: 30,),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(onPressed: (){
-                  setState(() {
-                    count= count+1;
-                  });
-                }, child: Icon(Icons.plus_one_rounded),),
-                SizedBox(width: 20,),
-                ElevatedButton(onPressed: (){
-                  setState(() {
-                    count= count-1;
-                  });
-                }, child: Icon(Icons.exposure_minus_1))
-              ],
-
+            Center(
+              child: Text(
+                "Welcome back!!",
+                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+              ),
             ),
+            SizedBox(height: 20,),
+            TextField(
+              controller: emailcontroller,
+              decoration: InputDecoration(
+                labelText: "Enter Your email",
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.email)
+              ),
+            ),
+            SizedBox(height: 20,),
+            TextField(
+              controller: passwordcontroller,
+              obscureText: obscuretext,
+              decoration: InputDecoration(
+                  labelText: "Enter Your password",
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.password_outlined),
+                suffixIcon: GestureDetector( onTap: (){
+                  setState(() {
+                    obscuretext = false;
+                  });
+                },  child: Icon(Icons.remove_red_eye_outlined))
+              ),
+            ),
+            SizedBox(height: 30,),
             ElevatedButton(onPressed: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context)=>Homescreen( name: "Divyesh", age: 22,)));
-            }, child: Text("Move to home Screen"))
+              String email = emailcontroller.text;
+              String pass = passwordcontroller.text;
+              if (email.isEmpty||pass.isEmpty){
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Please enter all details")));
+              }
+              else{
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Welcome $email")));
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>Homescreen(name: "Divyesh", age: 22)));
+              }
+            }, child: Text("Login"),),
+
           ],
         ),
-
       ),
     );
+  }
+  void Dispose(){
+    emailcontroller.dispose();
+    passwordcontroller.dispose();
+    super.dispose();
   }
 }
